@@ -1,9 +1,19 @@
 const path = require('path')
 const NODE_ENV = process.env.NODE_ENV
 const IsProduction = NODE_ENV === 'production'
+const fs = require('fs')
 
 const resolve = dir => {
     return path.resolve(__dirname, '../', dir)
+}
+
+let ver = 'latest'
+try {
+    const packageJson = fs.readFileSync(resolve('./package.json'))
+    const { version } = JSON.parse(packageJson)
+    ver = version
+}catch(err) {
+    console.warn(err.toString())
 }
 
 const config = {
@@ -13,10 +23,9 @@ const config = {
     output: {
         path: resolve('dist'),
         publicPath: '/',
-        filename: 'validateFieldDecorator.js',
-        chunkFilename: '[id].js',
+        filename: IsProduction ? `easy-util.${ver}.min.js` : `easy-util.${ver}.js`,
         libraryTarget: 'umd',
-        library: 'validateFieldDecorator',
+        library: 'easyUtil',
     },
     mode: NODE_ENV,
     module: {
